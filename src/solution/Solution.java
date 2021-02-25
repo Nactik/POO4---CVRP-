@@ -7,7 +7,6 @@ import io.exception.ReaderException;
 import operateur.InsertionClient;
 import operateur.Operateur;
 
-import java.text.BreakIterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -67,10 +66,10 @@ public class Solution {
     public Operateur getMeilleureInsertion(Client clientToInsert){
         Operateur current = null;
         if(!this.tournees.isEmpty()){
-            current = this.tournees.get(0).getMeilleurInsertion(clientToInsert);
+            current = this.tournees.get(0).getMeilleureInsertion(clientToInsert);
             if(current != null) {
                 for (int i = 1; i < this.tournees.size(); i++) {
-                    Operateur test = this.tournees.get(i).getMeilleurInsertion(clientToInsert);
+                    Operateur test = this.tournees.get(i).getMeilleureInsertion(clientToInsert);
                     if (test != null && test.isMeilleur(current))
                         current = test;
                 }

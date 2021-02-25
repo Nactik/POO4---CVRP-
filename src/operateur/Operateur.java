@@ -5,7 +5,7 @@ import solution.Tournee;
 public abstract class Operateur {
 
     protected Tournee tournee;
-    protected int cout;
+    protected int deltaCout;
 
     public Operateur() {
         tournee = null;
@@ -17,15 +17,15 @@ public abstract class Operateur {
     }
 
     public int getDeltaCout(){
-        return cout;
+        return deltaCout;
     }
 
     public boolean isMouvementRealisable(){
-        return cout != Integer.MAX_VALUE;
+        return deltaCout != Integer.MAX_VALUE;
     }
 
     public boolean isMeilleur(Operateur op){
-        return this.cout < op.cout;
+        return this.deltaCout < op.deltaCout;
     }
 
     public boolean doMouvementIfRealisable(){
@@ -33,6 +33,10 @@ public abstract class Operateur {
             return doMouvement();
         }
         return false;
+    }
+
+    public boolean isMouvementAmeliorant(){
+        return deltaCout < 0;
     }
 
     protected abstract int evalDeltaCout();

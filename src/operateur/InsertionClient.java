@@ -17,7 +17,7 @@ public class InsertionClient extends Operateur{
         super(tournee);
         this.clientToAdd = clientToAdd;
         this.position = position;
-        this.cout = this.evalDeltaCout();
+        this.deltaCout = this.evalDeltaCout();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class InsertionClient extends Operateur{
                 "clientToAdd=" + clientToAdd +
                 ", position=" + position +
                 ", tournee=" + tournee +
-                ", cout=" + cout +
+                ", cout=" + deltaCout +
                 '}';
     }
 

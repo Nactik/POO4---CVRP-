@@ -3,6 +3,8 @@ package test;
 import instance.Instance;
 import instance.reseau.Client;
 import instance.reseau.Depot;
+import io.InstanceReader;
+import io.exception.ReaderException;
 import operateur.InsertionClient;
 import operateur.Operateur;
 import solution.Tournee;
@@ -10,7 +12,7 @@ import solution.Tournee;
 public class TestMeilleureInsertion{
 
     public static void main(String[] args) {
-        int id = 1;
+        /*int id = 1;
         Depot d = new Depot(id++, 0, 0);
         Instance inst = new Instance("test", 100, d);
         Client c1 = new Client(id ++, 10, 0, 5);
@@ -37,7 +39,18 @@ public class TestMeilleureInsertion{
         System.out.println("cout : "+insertionClient.getDeltaCout());
         System.out.println("Realisable :"+ insertionClient.isMouvementRealisable());
 
-        Operateur meilleur = t.getMeilleurInsertion(cIns);
-        System.out.println(meilleur);
+        Operateur meilleur = t.getMeilleureInsertion(cIns);
+        System.out.println(meilleur);*/
+
+        try {
+            InstanceReader instanceReader = new InstanceReader("instance/A-n32-k5.vrp");
+            Instance instance = instanceReader.readInstance();
+
+
+        } catch (ReaderException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

@@ -5,13 +5,13 @@ import java.util.Objects;
 public class Route {
 
     private Point depart;
-    private Point arrivée;
+    private Point arrivee;
     private int cout;
 
-    public Route(Point depart, Point arrivée) {
+    public Route(Point depart, Point arrivee) {
         this.depart = depart;
-        this.arrivée = arrivée;
-        this.cout = this.calculerCout(depart,arrivée);
+        this.arrivee = arrivee;
+        this.cout = this.calculerCout(depart,arrivee);
     }
 
     private int calculerCout(Point p1, Point p2){
@@ -26,8 +26,8 @@ public class Route {
         return depart;
     }
 
-    public Point getArrivée() {
-        return arrivée;
+    public Point getArrivee() {
+        return arrivee;
     }
 
     public int getCout() {
@@ -39,19 +39,19 @@ public class Route {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Route route = (Route) o;
-        return Objects.equals(depart, route.depart) && Objects.equals(arrivée, route.arrivée);
+        return Objects.equals(depart, route.depart) && Objects.equals(arrivee, route.arrivee);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(depart, arrivée);
+        return Objects.hash(depart, arrivee);
     }
 
     @Override
     public String toString() {
         return "Route{" +
                 "depart=" + depart +
-                ", arrivée=" + arrivée +
+                ", arrivée=" + arrivee +
                 ", cout=" + cout +
                 '}';
     }

@@ -88,8 +88,8 @@ public class TestAllSolveur {
      */
     private void addSolveurs() {
         // TO CHECK : constructeur par defaut de la classe InsertionSimple
-        solveurs.add(new InsertionSimple());
-        solveurs.add(new InsertionProcheVoisin());
+        //solveurs.add(new InsertionSimple());
+        //solveurs.add(new InsertionProcheVoisin());
         solveurs.add(new MeilleureInsertion());
         // TO ADD : par la suite vous ajouterez ici les autres solveurs a tester
         // solveurs.add(new AutreSolveurATester());

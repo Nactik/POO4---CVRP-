@@ -122,6 +122,17 @@ public class Tournee {
         return this.clients.get(position);
     }
 
+    private Point getNext(int position){
+        if(position == this.clients.size()-1)
+            return this.depot;
+
+        return  this.clients.get(position+1);
+    }
+
+    private boolean isPositionValide(int position){
+        return position >= 0 && position <= this.clients.size()-1;
+    }
+
     private boolean isPositionInsertionValide(int position){
         return position >= 0 && position <= this.clients.size();
     }
@@ -139,8 +150,20 @@ public class Tournee {
         return prec.getCoutVers(clientToAdd) + clientToAdd.getCoutVers(current) - prec.getCoutVers(current);
     }
 
+    private  int deltaCoutSuppression(int position){
+        if(!isPositionValide(position))
+            return Integer.MAX_VALUE;
 
-    public Operateur getMeilleurInsertion(Client clientToInsert){
+        Point prec = this.getPrec(position);
+        Point current = this.getCurrent(position);
+        Point next = this.getNext(position);
+
+        return prec.getCoutVers();
+
+    }
+
+
+    public Operateur getMeilleureInsertion(Client clientToInsert){
         if(isAjoutRealisable(clientToInsert)){
             Operateur current = new InsertionClient(this,clientToInsert,0);
             for(int i=1;i<=this.clients.size();i++){
@@ -163,6 +186,12 @@ public class Tournee {
         this.clients.add(infos.getPosition(), infos.getClientToAdd());
 
         return check();
+    }
+
+    public Client getClientPosition(int position){
+        if(isPositionInsertionValide(position))
+            return null;
+        return this.clients.get(position);
     }
 
     @Override

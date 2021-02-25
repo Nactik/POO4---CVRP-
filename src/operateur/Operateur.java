@@ -29,7 +29,10 @@ public abstract class Operateur {
     }
 
     public boolean doMouvementIfRealisable(){
-
+        if(isMouvementRealisable()){
+            return doMouvement();
+        }
+        return false;
     }
 
     protected abstract int evalDeltaCout();

@@ -25,7 +25,10 @@ public class InsertionClient extends Operateur{
         return this.tournee.deltaCoutInsertion(position,clientToAdd);
     }
 
-
+    @Override
+    protected boolean doMouvement() {
+        return this.tournee.doInsertion(this);
+    }
 
     public int getPosition() {
         return position;

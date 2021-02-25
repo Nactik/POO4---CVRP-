@@ -4,6 +4,7 @@ import instance.Instance;
 import instance.reseau.Client;
 import io.InstanceReader;
 import io.exception.ReaderException;
+import operateur.InsertionClient;
 import operateur.Operateur;
 
 import java.text.BreakIterator;
@@ -63,14 +64,25 @@ public class Solution {
         return this.addClientToTournee(clientToAdd,lastTournee);
     }
 
-    public Operateur getMeilleurInsertion(Client clientToInsert){
-        Operateur current = this.tournees.get(0).getMeilleurInsertion(clientToInsert);
-        for (int i=1;i<this.tournees.size();i++){
-            Operateur test = this.tournees.get(i).getMeilleurInsertion(clientToInsert);
-            if(test.isMeilleur(current))
-                current = test;
+    public Operateur getMeilleureInsertion(Client clientToInsert){
+        Operateur current = null;
+        if(!this.tournees.isEmpty()){
+            current = this.tournees.get(0).getMeilleurInsertion(clientToInsert);
+            for (int i=1;i<this.tournees.size();i++){
+                Operateur test = this.tournees.get(i).getMeilleurInsertion(clientToInsert);
+                if(test.isMeilleur(current))
+                    current = test;
+            }
         }
         return  current;
+    }
+
+    public boolean doInsertion(InsertionClient infos){
+        if(infos != null ){
+            if(infos.doMouvementIfRealisable())
+                this.coutTotal += infos.getDeltaCout();
+        }
+        return false;
     }
 
     private boolean checkCoutTotal(){

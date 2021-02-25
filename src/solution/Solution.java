@@ -68,19 +68,21 @@ public class Solution {
         Operateur current = null;
         if(!this.tournees.isEmpty()){
             current = this.tournees.get(0).getMeilleurInsertion(clientToInsert);
-            for (int i=1;i<this.tournees.size();i++){
-                Operateur test = this.tournees.get(i).getMeilleurInsertion(clientToInsert);
-                if(test.isMeilleur(current))
-                    current = test;
+            if(current != null) {
+                for (int i = 1; i < this.tournees.size(); i++) {
+                    Operateur test = this.tournees.get(i).getMeilleurInsertion(clientToInsert);
+                    if (test != null && test.isMeilleur(current))
+                        current = test;
+                }
             }
         }
         return  current;
     }
 
     public boolean doInsertion(InsertionClient infos){
-        if(infos != null ){
-            if(infos.doMouvementIfRealisable())
-                this.coutTotal += infos.getDeltaCout();
+        if(infos.doMouvementIfRealisable()) {
+            this.coutTotal += infos.getDeltaCout();
+            return true;
         }
         return false;
     }

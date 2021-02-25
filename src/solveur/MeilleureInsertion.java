@@ -23,7 +23,7 @@ public class MeilleureInsertion implements Solveur{
 
         while(!clients.isEmpty()){
             InsertionClient best = (InsertionClient) this.getMeilleurOperateur(clients,solution);
-            if(solution.doInsertion(best)){
+            if(best != null && solution.doInsertion(best)){
                 clients.remove(best.getClientToAdd());
             } else {
                 solution.addClientNewTournee(clients.get(0));
@@ -35,10 +35,10 @@ public class MeilleureInsertion implements Solveur{
 
     private Operateur getMeilleurOperateur(List<Client> clients,Solution solution){
         Operateur current = solution.getMeilleureInsertion(clients.get(0));
-        if(current != null) {
+        if(current != null){
             for (int i = 1; i < clients.size(); i++) {
                 Operateur test = solution.getMeilleureInsertion(clients.get(i));
-                if (test.isMeilleur(current))
+                if (test != null && test.isMeilleur(current))
                     current = test;
             }
         }

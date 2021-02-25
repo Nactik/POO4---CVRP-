@@ -151,7 +151,7 @@ public class Tournee {
             }
             return current;
         }
-        return new InsertionClient();
+        return null;
     }
 
     public boolean doInsertion(InsertionClient infos){

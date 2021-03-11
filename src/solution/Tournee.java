@@ -158,10 +158,32 @@ public class Tournee {
         Point current = this.getCurrent(position);
         Point next = this.getNext(position);
 
-        return prec.getCoutVers();
+        //Si 1 client, la nouvelle route est de 0 (dépot -> dépot)
+        int newCout  = (this.clients.size() == 1) ? 0 : prec.getCoutVers(next);
+
+        return newCout - prec.getCoutVers(current) - current.getCoutVers(next);
 
     }
 
+    public int deltaCoutDeplacement(int positionI, int positionJ){
+        if(!isPositionDeplacementValide(positionI,positionJ))
+            return Integer.MAX_VALUE;
+
+        Client clientToAdd = getClientPosition(positionI);
+
+        return this.deltaCoutInsertion(positionI,clientToAdd) + deltaCoutSuppression(positionJ);
+    }
+
+    private boolean isPositionDeplacementValide(int positionI, int positionJ){
+        if(!isPositionValide(positionI))
+            return false;
+        if(!isPositionInsertionValide(positionJ))
+            return false;
+
+        int diff = (positionI-positionJ);
+
+        return diff != 0 && diff != 1;
+    }
 
     public Operateur getMeilleureInsertion(Client clientToInsert){
         if(isAjoutRealisable(clientToInsert)){

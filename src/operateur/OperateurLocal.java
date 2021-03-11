@@ -5,8 +5,8 @@ import solution.Tournee;
 
 public abstract class OperateurLocal extends Operateur {
 
-    private int positionI;
-    private int positionJ;
+    protected int positionI;
+    protected int positionJ;
     private Client clientI;
     private Client clientJ;
 
@@ -17,6 +17,8 @@ public abstract class OperateurLocal extends Operateur {
 
     public OperateurLocal(Tournee tournee,int positionI,int positionJ) {
         super(tournee);
+        this.positionI = positionI;
+        this.positionJ = positionJ;
         this.clientI = tournee.getClientPosition(positionI);
         this.clientJ = tournee.getClientPosition(positionJ);
     }
@@ -40,9 +42,9 @@ public abstract class OperateurLocal extends Operateur {
             case INTER_ECHANGE:
                 return null;
             case INTRA_DEPLACEMENT:
-                return null;
+                return new IntraDeplacement();
             case INTRA_ECHANGE:
-                return null;
+                return new IntraEchange();
             default:
                 return null;
         }
@@ -63,10 +65,10 @@ public abstract class OperateurLocal extends Operateur {
     public static OperateurIntraTournee getOperateurIntra(TypeOperateurLocal type,Tournee tournee,
                                                            int positionI, int positionJ){
         switch (type){
-            case INTER_DEPLACEMENT:
-                return null;
-            case INTER_ECHANGE:
-                return null;
+            case INTRA_DEPLACEMENT:
+                return new IntraDeplacement(tournee,positionI,positionJ);
+            case INTRA_ECHANGE:
+                return new IntraEchange(tournee,positionI,positionJ);
             default:
                 return null;
         }

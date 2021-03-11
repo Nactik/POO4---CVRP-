@@ -19,10 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 // TO CHECK : import des classes Solution, InsertionSimple et Solveur
 import solution.Solution;
-import solveur.InsertionProcheVoisin;
-import solveur.InsertionSimple;
-import solveur.MeilleureInsertion;
-import solveur.Solveur;
+import solveur.*;
 
 /**
  * Cette classe permet de tester et comparer les performances de plusieurs 
@@ -88,9 +85,10 @@ public class TestAllSolveur {
      */
     private void addSolveurs() {
         // TO CHECK : constructeur par defaut de la classe InsertionSimple
-        //solveurs.add(new InsertionSimple());
-        //solveurs.add(new InsertionProcheVoisin());
+        solveurs.add(new InsertionSimple());
+        solveurs.add(new InsertionProcheVoisin());
         solveurs.add(new MeilleureInsertion());
+        solveurs.add(new RechercheLocale());
         // TO ADD : par la suite vous ajouterez ici les autres solveurs a tester
         // solveurs.add(new AutreSolveurATester());
     }

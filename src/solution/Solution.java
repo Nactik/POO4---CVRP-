@@ -4,8 +4,7 @@ import instance.Instance;
 import instance.reseau.Client;
 import io.InstanceReader;
 import io.exception.ReaderException;
-import operateur.InsertionClient;
-import operateur.Operateur;
+import operateur.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -78,7 +77,39 @@ public class Solution {
         return  current;
     }
 
+    private OperateurLocal getMeilleurOperateurIntra(TypeOperateurLocal type){
+        OperateurLocal best = null;
+        if(!this.tournees.isEmpty()){
+            best = this.tournees.get(0).getMeilleurOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT);
+            if(best != null){
+                for (int i = 1; i < this.tournees.size(); i++) {
+                    OperateurLocal test = this.tournees.get(i).getMeilleurOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT);
+                    if (test != null && test.isMeilleur(best))
+                        best = test;
+                }
+            }
+        }
+        return best;
+    }
+
+
+    public OperateurLocal getMeilleurOperateur(TypeOperateurLocal type){
+        if(OperateurLocal.getOperateur(type) instanceof OperateurIntraTournee){
+            return this.getMeilleurOperateurIntra(type);
+        }else{
+            return null;
+        }
+    }
+
     public boolean doInsertion(InsertionClient infos){
+        if(infos.doMouvementIfRealisable()) {
+            this.coutTotal += infos.getDeltaCout();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean doMouvementRechercheLocale(OperateurLocal infos){
         if(infos.doMouvementIfRealisable()) {
             this.coutTotal += infos.getDeltaCout();
             return true;

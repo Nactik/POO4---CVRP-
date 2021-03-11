@@ -9,10 +9,11 @@ public abstract class Operateur {
 
     public Operateur() {
         tournee = null;
-        int cout = Integer.MAX_VALUE;
+        this.deltaCout = Integer.MAX_VALUE;
     }
 
     public Operateur(Tournee tournee) {
+        this();
         this.tournee = tournee;
     }
 

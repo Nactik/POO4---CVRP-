@@ -6,8 +6,7 @@ import instance.reseau.Depot;
 import instance.reseau.Point;
 import io.InstanceReader;
 import io.exception.ReaderException;
-import operateur.InsertionClient;
-import operateur.Operateur;
+import operateur.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -171,7 +170,57 @@ public class Tournee {
 
         Client clientToAdd = getClientPosition(positionI);
 
-        return this.deltaCoutInsertion(positionI,clientToAdd) + deltaCoutSuppression(positionJ);
+        return this.deltaCoutInsertion(positionJ,clientToAdd) + this.deltaCoutSuppression(positionI);
+    }
+
+    public int deltaCoutEchange(int positionI, int positionJ){
+        if(!isPositionEchangeValide(positionI,positionJ))
+            return Integer.MAX_VALUE;
+
+        Client clientJ = this.getClientPosition(positionJ);
+        Client clientI = this.getClientPosition(positionI);
+
+        if(positionJ == positionI+1)
+            return deltaCoutEchangeConsecutif(positionI);
+        else{
+            return deltaCoutRemplacement(positionI, clientJ) + deltaCoutRemplacement(positionJ, clientI);
+        }
+    }
+
+    private int deltaCoutEchangeConsecutif(int positionI){
+
+        // Attention au cas ou size == 1, osef pour l'instant
+
+        Point precI = this.getPrec(positionI); //prec de I
+        Point clientI = this.getCurrent(positionI); //Point I
+        Point clientJ = this.getNext(positionI); //Point J du coup
+        Point nextJ = this.getNext(positionI + 1); //Point J + 1
+
+        int coutToRemove =  precI.getCoutVers(clientI) + clientI.getCoutVers(clientJ) + clientJ.getCoutVers(nextJ);
+        int coutToAdd = precI.getCoutVers(clientJ) + clientJ.getCoutVers(clientI) + clientI.getCoutVers(nextJ);
+
+        return coutToAdd - coutToRemove;
+    }
+
+    private int deltaCoutRemplacement(int position, Client client){
+        if(client == null)
+            return Integer.MAX_VALUE;
+
+        Point toReplace = this.getCurrent(position); //Point à remplacer
+        Point precToReplace = this.getPrec(position); //Point avant celui à remplacer
+        Point nextToReplace = this.getNext(position); //Point après celui à remplacer
+
+        int coutToRemove = precToReplace.getCoutVers(toReplace) + toReplace.getCoutVers(nextToReplace);
+        int coutToAdd = precToReplace.getCoutVers(client) + client.getCoutVers(nextToReplace);
+
+        return  coutToAdd - coutToRemove;
+    }
+
+    private boolean isPositionEchangeValide(int positionI, int positionJ){
+        if(!isPositionValide(positionI) || !isPositionValide(positionJ))
+            return false;
+
+        return positionI < positionJ;
     }
 
     private boolean isPositionDeplacementValide(int positionI, int positionJ){
@@ -180,7 +229,7 @@ public class Tournee {
         if(!isPositionInsertionValide(positionJ))
             return false;
 
-        int diff = (positionI-positionJ);
+        int diff = Math.abs(positionI-positionJ);
 
         return diff != 0 && diff != 1;
     }
@@ -210,11 +259,69 @@ public class Tournee {
         return check();
     }
 
+    public boolean doDeplacement(IntraDeplacement infos){
+        if(infos == null)
+            return false;
+        if (deltaCoutDeplacement(infos.getPositionI(), infos.getPositionJ()) == Integer.MAX_VALUE)
+            return false;
+
+        Client toMove = this.clients.get(infos.getPositionI());
+        if(toMove== null) return false;
+
+        this.clients.remove(infos.getPositionI());
+        if (infos.getPositionI() > infos.getPositionJ()) {
+            this.clients.add(infos.getPositionJ(), toMove);
+        }else{
+            this.clients.add(infos.getPositionJ()-1, toMove);
+        }
+
+        this.coutTotal += infos.getDeltaCout();
+        return check();
+    }
+
+    public  boolean doEchange(IntraEchange infos){
+        if(infos == null)
+            return false;
+
+        int positionI = infos.getPositionI();
+        int positionJ = infos.getPositionJ();
+
+        Client clientI = this.clients.get(positionI);
+        Client clientJ = this.clients.get(positionJ);
+
+        if(clientI == null || clientJ == null)
+            return false;
+
+        this.clients.remove(positionJ);
+        this.clients.add(positionJ,clientI);
+
+        this.clients.remove(positionI);
+        this.clients.add(positionI,clientJ);
+
+        this.coutTotal += infos.getDeltaCout();
+        return check();
+    }
+
     public Client getClientPosition(int position){
-        if(isPositionInsertionValide(position))
+        if(!isPositionValide(position))
             return null;
         return this.clients.get(position);
     }
+
+    public OperateurLocal getMeilleurOperateurIntra(TypeOperateurLocal type) {
+
+        OperateurLocal best = OperateurLocal.getOperateur(type);
+        for(int i=0; i<clients.size(); i++) {
+            for(int j=0; j<clients.size()+1; j++) {
+                OperateurIntraTournee op = OperateurLocal.getOperateurIntra(type, this, i, j);
+                if(op != null && op.isMeilleur(best)) {
+                    best = op;
+                }
+            }
+        }
+        return best;
+    }
+
 
     @Override
     public boolean equals(Object o) {

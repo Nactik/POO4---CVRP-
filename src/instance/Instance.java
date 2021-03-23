@@ -31,7 +31,7 @@ public class Instance {
     }
 
     public LinkedList<Client> getClients(){
-        return new LinkedList<Client>(this.clients.values());
+        return new LinkedList<>(this.clients.values());
     }
 
     public Boolean ajouterClient(Client clientToAdd){

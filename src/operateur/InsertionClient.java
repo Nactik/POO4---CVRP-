@@ -13,6 +13,10 @@ public class InsertionClient extends Operateur{
         clientToAdd = null;
     }
 
+    public InsertionClient(Tournee tournee){
+        super(tournee);
+    }
+
     public InsertionClient(Tournee tournee, Client clientToAdd, int position) {
         super(tournee);
         this.clientToAdd = clientToAdd;
@@ -22,7 +26,7 @@ public class InsertionClient extends Operateur{
 
     @Override
     protected int evalDeltaCout() {
-        return this.tournee.deltaCoutInsertion(position,clientToAdd);
+        return this.tournee.deltaCoutInsertion(this.position,this.clientToAdd);
     }
 
     @Override
@@ -31,11 +35,11 @@ public class InsertionClient extends Operateur{
     }
 
     public int getPosition() {
-        return position;
+        return this.position;
     }
 
     public Client getClientToAdd() {
-        return clientToAdd;
+        return this.clientToAdd;
     }
 
     @Override

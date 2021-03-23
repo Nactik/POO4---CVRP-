@@ -4,7 +4,7 @@ import solution.Tournee;
 
 public abstract class OperateurInterTournees extends OperateurLocal{
 
-    private Tournee autreTournee;
+    protected Tournee autreTournee;
     private int deltaCoutTournee;
     private int deltaCoutAutreTournee;
 
@@ -18,6 +18,8 @@ public abstract class OperateurInterTournees extends OperateurLocal{
         this.autreTournee = autreTournee;
         this.setClientJ(autreTournee.getClientPosition(positionJ));
         this.deltaCout = this.evalDeltaCout();
+        this.deltaCoutTournee = this.evalDeltaCoutTournee();
+        this.deltaCoutAutreTournee = this.evalDeltaCoutAutreTournee();
     }
 
     public abstract int evalDeltaCoutTournee();
@@ -25,9 +27,26 @@ public abstract class OperateurInterTournees extends OperateurLocal{
 
     @Override
     protected int evalDeltaCout() {
-        return evalDeltaCoutAutreTournee() + evalDeltaCoutAutreTournee();
+        int coutTournee = evalDeltaCoutTournee();
+        int coutAutreTournee = evalDeltaCoutAutreTournee();
+
+        if(coutTournee ==Integer.MAX_VALUE || coutAutreTournee == Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
+
+        return coutTournee + coutAutreTournee;
     }
 
+    public Tournee getAutreTournee() {
+        return autreTournee;
+    }
+
+    public int getDeltaCoutTournee() {
+        return deltaCoutTournee;
+    }
+
+    public int getDeltaCoutAutreTournee() {
+        return deltaCoutAutreTournee;
+    }
 
     @Override
     public String toString() {

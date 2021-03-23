@@ -11,6 +11,7 @@ public abstract class OperateurLocal extends Operateur {
     private Client clientJ;
 
     public OperateurLocal() {
+        super();
         this.clientI = null;
         this.clientJ = null;
     }
@@ -38,7 +39,7 @@ public abstract class OperateurLocal extends Operateur {
     public static OperateurLocal getOperateur(TypeOperateurLocal type){
         switch (type){
             case INTER_DEPLACEMENT:
-                return null;
+                return new InterDeplacement();
             case INTER_ECHANGE:
                 return null;
             case INTRA_DEPLACEMENT:
@@ -50,11 +51,11 @@ public abstract class OperateurLocal extends Operateur {
         }
     }
 
-    public static OperateurInterTournees getOperateurInter(TypeOperateurLocal type,Tournee tournee,
+    public static OperateurInterTournees getOperateurInter(TypeOperateurLocal type,Tournee tournee,Tournee autreTournee,
                                                            int positionI, int positionJ){
         switch (type){
             case INTER_DEPLACEMENT:
-                return null;
+                return new InterDeplacement(tournee,autreTournee,positionI,positionJ);
             case INTER_ECHANGE:
                 return null;
             default:

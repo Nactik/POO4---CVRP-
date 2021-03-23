@@ -50,13 +50,15 @@ public class Tournee {
     private boolean majCoutTotal(Client clientToAdd){
         int cout = this.deltaCoutInsertion(this.clients.size(),clientToAdd);
 
+        if(cout == Integer.MAX_VALUE)
+            return false;
+
         this.coutTotal += cout;
         return true;
     }
 
     private boolean isAjoutRealisable(Client clientToAdd){
-        if(clientToAdd == null) return false;
-        return this.demandeTotale + clientToAdd.getDemande() <= this.capacite;
+        return clientToAdd != null && this.demandeTotale + clientToAdd.getDemande() <= this.capacite;
     }
 
     public boolean ajouterClient(Client clientToAdd){
@@ -129,28 +131,37 @@ public class Tournee {
     }
 
     private boolean isPositionValide(int position){
-        return position >= 0 && position <= this.clients.size()-1;
-    }
+        return position >= 0 && position < this.clients.size();
+    }//OK
 
     private boolean isPositionInsertionValide(int position){
         return position >= 0 && position <= this.clients.size();
-    }
+    } //OK
 
     public int deltaCoutInsertion(int position, Client clientToAdd){
-        if(clientToAdd == null || !isPositionInsertionValide(position))
+        if(clientToAdd == null || !this.isPositionInsertionValide(position))
             return Integer.MAX_VALUE;
 
         Point prec = this.getPrec(position);
         Point current = this.getCurrent(position);
 
+        if(prec.getCoutVers(clientToAdd) == Integer.MAX_VALUE || clientToAdd.getCoutVers(current) == Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
+
         if(prec.equals(current))
             return prec.getCoutVers(clientToAdd) + clientToAdd.getCoutVers(prec);
 
         return prec.getCoutVers(clientToAdd) + clientToAdd.getCoutVers(current) - prec.getCoutVers(current);
+    } //OK
+
+    public int deltaCoutInsertionInter(int position, Client clientToAdd){
+        if(!this.isAjoutRealisable(clientToAdd))
+            return Integer.MAX_VALUE;
+        return deltaCoutInsertion(position,clientToAdd);
     }
 
-    private  int deltaCoutSuppression(int position){
-        if(!isPositionValide(position))
+    public int deltaCoutSuppression(int position){
+        if(!isPositionValide(position) || this.clients.isEmpty())
             return Integer.MAX_VALUE;
 
         Point prec = this.getPrec(position);
@@ -249,7 +260,7 @@ public class Tournee {
     }
 
     public boolean doInsertion(InsertionClient infos){
-        if(infos == null) return false;
+        if(infos == null || this.clients.contains(infos.getClientToAdd())) return false;
 
         this.coutTotal += infos.getDeltaCout();
         this.demandeTotale +=  infos.getClientToAdd().getDemande();
@@ -276,6 +287,27 @@ public class Tournee {
         }
 
         this.coutTotal += infos.getDeltaCout();
+        return check();
+    }
+
+    public boolean doDeplacement(InterDeplacement infos){
+        if(infos == null) return false;
+
+        int posI = infos.getPositionI();
+        int posJ = infos.getPositionJ();
+
+
+        Client toMove = this.clients.get(posI);
+        if(toMove == null) return false;
+
+        this.clients.remove(posI);
+        this.coutTotal+=infos.getDeltaCoutTournee();
+        this.demandeTotale-=toMove.getDemande();
+
+        infos.getAutreTournee().clients.add(posJ, toMove);
+        infos.getAutreTournee().coutTotal+=infos.getDeltaCoutAutreTournee();
+        infos.getAutreTournee().demandeTotale+=toMove.getDemande();
+
         return check();
     }
 
@@ -322,6 +354,21 @@ public class Tournee {
         return best;
     }
 
+    public OperateurLocal getMeilleurOperateurInter(Tournee autreTournee,TypeOperateurLocal type) {
+        if(autreTournee.equals(this))
+            return this.getMeilleurOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT);
+
+        OperateurLocal best = OperateurLocal.getOperateur(type);
+        for(int i=0; i<clients.size(); i++) {
+            for(int j=0; j<autreTournee.clients.size()+1; j++) {
+                OperateurInterTournees op = OperateurLocal.getOperateurInter(type, this, autreTournee,i, j);
+                if(op != null && op.isMeilleur(best)) {
+                    best = op;
+                }
+            }
+        }
+        return best;
+    }
 
     @Override
     public boolean equals(Object o) {

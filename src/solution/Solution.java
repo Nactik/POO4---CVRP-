@@ -30,7 +30,7 @@ public class Solution {
         if(t.ajouterClient(clientToAdd)){
             this.coutTotal += t.getCoutTotal() - coutTemp;
             return true;
-        };
+        }
         return false;
     }
 
@@ -80,12 +80,29 @@ public class Solution {
     private OperateurLocal getMeilleurOperateurIntra(TypeOperateurLocal type){
         OperateurLocal best = null;
         if(!this.tournees.isEmpty()){
-            best = this.tournees.get(0).getMeilleurOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT);
+            best = this.tournees.get(0).getMeilleurOperateurIntra(type);
             if(best != null){
                 for (int i = 1; i < this.tournees.size(); i++) {
-                    OperateurLocal test = this.tournees.get(i).getMeilleurOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT);
+                    OperateurLocal test = this.tournees.get(i).getMeilleurOperateurIntra(type);
                     if (test != null && test.isMeilleur(best))
                         best = test;
+                }
+            }
+        }
+        return best;
+    }
+
+    private OperateurLocal getMeilleurOperateurInter(TypeOperateurLocal type){
+        OperateurLocal best = null;
+        if(!this.tournees.isEmpty()){
+            best = this.tournees.get(0).getMeilleurOperateurIntra(type);
+            if(best != null){
+                for (int i = 1; i < this.tournees.size(); i++) {
+                    for(int j=1;j < this.tournees.size();j++){
+                        OperateurLocal test = this.tournees.get(i).getMeilleurOperateurInter(this.tournees.get(j), type);
+                        if (test != null && test.isMeilleur(best))
+                            best = test;
+                    }
                 }
             }
         }
@@ -96,9 +113,11 @@ public class Solution {
     public OperateurLocal getMeilleurOperateur(TypeOperateurLocal type){
         if(OperateurLocal.getOperateur(type) instanceof OperateurIntraTournee){
             return this.getMeilleurOperateurIntra(type);
-        }else{
-            return null;
         }
+        if(OperateurLocal.getOperateur(type) instanceof OperateurInterTournees){
+            return this.getMeilleurOperateurInter(type);
+        }
+        return null;
     }
 
     public boolean doInsertion(InsertionClient infos){
@@ -110,7 +129,7 @@ public class Solution {
     }
 
     public boolean doMouvementRechercheLocale(OperateurLocal infos){
-        if(infos.doMouvementIfRealisable()) {
+        if(infos.doMouvementIfRealisable() && infos.isMouvementAmeliorant()) {
             this.coutTotal += infos.getDeltaCout();
             return true;
         }

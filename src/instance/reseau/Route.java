@@ -15,8 +15,8 @@ public class Route {
     }
 
     private int calculerCout(Point p1, Point p2){
-        double x1 = Math.pow(p1.getAbscisse() - p2.getAbscisse(),2);
-        double x2 = Math.pow(p1.getOrdonnee() - p2.getOrdonnee(),2);
+        double x1 = Math.pow(p2.getAbscisse() - p1.getAbscisse(),2);
+        double x2 = Math.pow(p2.getOrdonnee() - p1.getOrdonnee(),2);
 
         double distance = Math.sqrt(x1 + x2);
         return (int) Math.round(distance);

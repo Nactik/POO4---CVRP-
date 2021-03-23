@@ -24,7 +24,7 @@ public class RechercheLocale implements Solveur{
         if(improve){
             improve = false;
 
-            OperateurLocal best = solution.getMeilleurOperateur(TypeOperateurLocal.INTRA_ECHANGE);
+            OperateurLocal best = solution.getMeilleurOperateur(TypeOperateurLocal.INTER_DEPLACEMENT);
             if(best.isMouvementAmeliorant()){
                 solution.doMouvementRechercheLocale(best);
                 improve = true;

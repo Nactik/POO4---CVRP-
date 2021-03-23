@@ -22,12 +22,13 @@ public class MeilleureInsertion implements Solveur{
         Solution solution = new Solution(instance);
 
         while(!clients.isEmpty()){
-            InsertionClient best = (InsertionClient) this.getMeilleurOperateur(clients,solution);
-            if(best != null && solution.doInsertion(best)){
-                clients.remove(best.getClientToAdd());
+            InsertionClient best = (InsertionClient) this.getMeilleurOperateur(clients, solution);
+            if(best == null || !solution.doInsertion(best)) {
+                Client c = clients.getFirst();
+                solution.addClientNewTournee(c);
+                clients.remove(c);
             } else {
-                solution.addClientNewTournee(clients.get(0));
-                clients.remove(0);
+                clients.remove(best.getClientToAdd());
             }
         }
         return solution;

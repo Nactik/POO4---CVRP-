@@ -61,6 +61,11 @@ public class Tournee {
         return clientToAdd != null && this.demandeTotale + clientToAdd.getDemande() <= this.capacite;
     }
 
+    private boolean isEchangeInterRealisable(Client clientToAdd, Client clientToDel){
+        return clientToAdd != null && clientToDel != null
+                && this.demandeTotale - clientToDel.getDemande() + clientToAdd.getDemande() <= this.capacite;
+    }
+
     public boolean ajouterClient(Client clientToAdd){
         if(!isAjoutRealisable(clientToAdd)) return false;
 
@@ -80,18 +85,17 @@ public class Tournee {
     }
 
     private boolean checkCout(){
-        int cout = 0;
-        int i = 0;
+        if(this.clients.isEmpty()) return false;
 
-        cout += this.depot.getCoutVers(this.clients.get(i));
+        int checkCout = 0;
 
-        for(i=0;i<this.clients.size() - 1; i++) {
-            cout+= this.clients.get(i).getCoutVers(this.clients.get(i+1));
+        checkCout += this.depot.getCoutVers(((LinkedList<Client>) this.clients).getFirst());
+        for(int i=0; i<this.clients.size()-1; i++){
+            checkCout += this.clients.get(i).getCoutVers(this.clients.get(i+1));
         }
+        checkCout += ((LinkedList<Client>) this.clients).getLast().getCoutVers(this.depot);
 
-        cout += this.clients.get(i).getCoutVers(this.depot);
-
-        return cout == this.coutTotal;
+        return checkCout == this.coutTotal;
     }
 
     public boolean check(){
@@ -160,6 +164,12 @@ public class Tournee {
         return deltaCoutInsertion(position,clientToAdd);
     }
 
+    public int deltaCoutRemplacementInter(int position, Client clientToAdd, Client clientToDel){
+        if(!this.isEchangeInterRealisable(clientToAdd, clientToDel))
+            return Integer.MAX_VALUE;
+        return deltaCoutRemplacement(position,clientToAdd);
+    }
+
     public int deltaCoutSuppression(int position){
         if(!isPositionValide(position) || this.clients.isEmpty())
             return Integer.MAX_VALUE;
@@ -213,7 +223,7 @@ public class Tournee {
         return coutToAdd - coutToRemove;
     }
 
-    private int deltaCoutRemplacement(int position, Client client){
+    public int deltaCoutRemplacement(int position, Client client){
         if(client == null)
             return Integer.MAX_VALUE;
 
@@ -307,6 +317,32 @@ public class Tournee {
         infos.getAutreTournee().clients.add(posJ, toMove);
         infos.getAutreTournee().coutTotal+=infos.getDeltaCoutAutreTournee();
         infos.getAutreTournee().demandeTotale+=toMove.getDemande();
+
+        return check();
+    }
+
+    public boolean doEchange(InterEchange infos){
+        if (infos==null) {
+            return false;
+        }
+        //Recup
+        int posI = infos.getPositionI();
+        int posJ = infos.getPositionJ();
+        Client clientI = this.getClientPosition(posI);
+        Client clientJ = infos.getAutreTournee().getClientPosition(posJ);
+
+        //Supp
+        this.clients.remove(posI);
+        infos.getAutreTournee().clients.remove(posJ);
+        //Ajout client
+        this.clients.add(posI, clientJ);
+        infos.getAutreTournee().clients.add(posJ, clientI);
+        //Ajout cout
+        this.coutTotal += infos.getDeltaCoutTournee();
+        infos.getAutreTournee().coutTotal += infos.getDeltaCoutAutreTournee();
+        //Ajout demande
+        this.demandeTotale = demandeTotale - clientI.getDemande() + clientJ.getDemande();
+        infos.getAutreTournee().demandeTotale = infos.getAutreTournee().demandeTotale - clientJ.getDemande()+clientI.getDemande();
 
         return check();
     }

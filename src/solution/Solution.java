@@ -125,7 +125,7 @@ public class Solution {
             this.coutTotal += infos.getDeltaCout();
             return true;
         }
-        return false;
+        return check();
     }
 
     public boolean doMouvementRechercheLocale(OperateurLocal infos){
@@ -133,7 +133,7 @@ public class Solution {
             this.coutTotal += infos.getDeltaCout();
             return true;
         }
-        return false;
+        return check();
     }
 
     private boolean checkCoutTotal(){

@@ -17,9 +17,9 @@ public abstract class OperateurInterTournees extends OperateurLocal{
         super(tournee, positionI, positionJ);
         this.autreTournee = autreTournee;
         this.setClientJ(autreTournee.getClientPosition(positionJ));
-        this.deltaCout = this.evalDeltaCout();
         this.deltaCoutTournee = this.evalDeltaCoutTournee();
         this.deltaCoutAutreTournee = this.evalDeltaCoutAutreTournee();
+        this.deltaCout = this.evalDeltaCout();
     }
 
     public abstract int evalDeltaCoutTournee();
@@ -27,8 +27,8 @@ public abstract class OperateurInterTournees extends OperateurLocal{
 
     @Override
     protected int evalDeltaCout() {
-        int coutTournee = evalDeltaCoutTournee();
-        int coutAutreTournee = evalDeltaCoutAutreTournee();
+        int coutTournee = this.deltaCoutTournee;
+        int coutAutreTournee = this.deltaCoutAutreTournee;
 
         if(coutTournee ==Integer.MAX_VALUE || coutAutreTournee == Integer.MAX_VALUE)
             return Integer.MAX_VALUE;

@@ -7,8 +7,8 @@ public abstract class OperateurLocal extends Operateur {
 
     protected int positionI;
     protected int positionJ;
-    private Client clientI;
-    private Client clientJ;
+    protected Client clientI;
+    protected Client clientJ;
 
     public OperateurLocal() {
         super();
@@ -41,7 +41,7 @@ public abstract class OperateurLocal extends Operateur {
             case INTER_DEPLACEMENT:
                 return new InterDeplacement();
             case INTER_ECHANGE:
-                return null;
+                return new InterEchange();
             case INTRA_DEPLACEMENT:
                 return new IntraDeplacement();
             case INTRA_ECHANGE:
@@ -57,7 +57,7 @@ public abstract class OperateurLocal extends Operateur {
             case INTER_DEPLACEMENT:
                 return new InterDeplacement(tournee,autreTournee,positionI,positionJ);
             case INTER_ECHANGE:
-                return null;
+                return new InterEchange(tournee,autreTournee,positionI,positionJ);
             default:
                 return null;
         }

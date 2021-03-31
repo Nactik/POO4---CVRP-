@@ -5,6 +5,7 @@ import instance.reseau.Client;
 import instance.reseau.Depot;
 import operateur.InterDeplacement;
 import operateur.IntraDeplacement;
+import operateur.TypeOperateurLocal;
 import solution.Tournee;
 
 import static operateur.TypeOperateurLocal.INTER_DEPLACEMENT;

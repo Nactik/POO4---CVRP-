@@ -29,8 +29,6 @@ public class InterDeplacement extends OperateurInterTournees {
         return this.tournee.doDeplacement(this);
     }
 
-
-
     @Override
     public String toString() {
         return "InterDeplacement{" +
